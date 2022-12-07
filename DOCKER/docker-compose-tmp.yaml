@@ -1,4 +1,11 @@
 version: '3'
+
+#网络设置
+networks:
+  test-net:
+    external:
+      name: test-net
+
 services:
   test-service:
     user: root

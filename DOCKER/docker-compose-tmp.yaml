@@ -8,6 +8,8 @@ networks:
 
 services:
   test-service:
+    networks:
+      - test-net
     user: root
     env_file:
       - .env

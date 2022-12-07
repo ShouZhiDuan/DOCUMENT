@@ -1,0 +1,7 @@
+1、curl -k https://192.168.10.90:28443/
+
+2、curl https://192.168.10.90:28443/
+
+3、curl https://demo.com:28443/ --cacert ./cert/server.crt
+
+4、curl https://demo.com:28443/ --cacert ./cert/server.crt --resolve demo.com:28443:"192.168.10.90"

@@ -1,0 +1,31 @@
+version: '3'
+services:
+  test-service:
+    user: root
+    env_file:
+      - .env
+    image: test.image.tag
+    container_name: testName
+    #容器拥有宿主机最大权限
+    privileged: true
+    #开启容器执行宿主机shell通道
+    pid: host
+    #宿主机模式
+    network_mode: host
+    ports:
+      - 33306:3306
+    environment:
+      #设置容器内部时区
+      TZ: Asia/Shanghai
+    #执行容器内部脚本
+    command:
+      - sh
+      - -c
+      - |
+        /shell/test1.sh
+        /shell/test2.sh
+    volumes:
+      #目录挂载
+      - ./shell:/shell
+    #永远保持容器存在
+    restart: always

@@ -1,0 +1,59 @@
+docker容器运行时间长后，日志大小会日益增多，就会出现磁盘空间不足的情况，目前解决方法如下：
+
+1、临时方法：找到较大的日志文件删掉
+
+查找日志文件的命令：
+
+find /var/lib/docker/containers/ -name *-json.log
+
+删除命令：
+
+rm -rf
+
+或者到文件管理器中删除对应文件
+
+2、永久方法：设置容器日志的上限
+
+1）单容器的日志限制操作：通过配置容器docker-compose的max-size选项来实现
+
+复制代码
+
+1 nginx:
+
+2 image: nginx:1.12.1
+
+3 restart: always
+
+4 logging:
+
+5 driver: "json-file"
+
+6 options:
+
+7 max-size: "5g"
+
+复制代码
+
+重启容器后即可生效
+
+2）全局设置：新建/etc/docker/daemon.json，若有就不用新建了；添加log-dirver和log-opts参数。
+
+vim /etc/docker/daemon.json
+
+{
+
+"log-driver":"json-file"
+
+"log-opts":{"max-size":"500m","max-file":"3"}
+
+}
+
+max-size=500m，意味着一个容器日志大小上限是500M，
+
+max-file=3，意味着一个容器有三个日志，分别是id+.json、id+1.json、id+2.json。
+
+重启docker守护进程，该方法只对新建的容器起效
+
+systemctl daemon-reload
+
+systemctl restart docker

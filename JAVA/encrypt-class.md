@@ -1,3 +1,8 @@
+# 参考文档
+```text
+https://toscode.gitee.com/JustryDeng/class-winter/blob/master/README.md
+```
+
 # Maven依赖
 ```xml
 <build>

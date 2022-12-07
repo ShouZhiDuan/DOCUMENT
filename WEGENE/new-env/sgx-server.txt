@@ -1,0 +1,7 @@
+三、SGX服务器
+1、118.31.4.166：25917
+账号：nvx_dev
+密码：NVXdev@CL0uds&C0m?
+2、121.196.216.220：25918
+账号：nvx_dev
+密码：NVXdev@CL0uds&C0m?

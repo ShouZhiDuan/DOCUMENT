@@ -36,5 +36,8 @@ services:
     volumes:
       #目录挂载
       - ./shell:/shell
+      # 下面设置容器内部可等效操作宿主机docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
     #永远保持容器存在
     restart: always

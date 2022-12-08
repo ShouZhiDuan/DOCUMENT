@@ -1,5 +1,8 @@
 # MDL锁
 
+## 参考
+- https://opensource.actionsky.com/20220426-mysql/
+
 ## 查看MDL是否开启
 ```sql
 select * from performance_schema.setup_instruments WHERE `NAME`='wait/lock/metadata/sql/mdl';

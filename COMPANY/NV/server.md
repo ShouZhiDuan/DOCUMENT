@@ -10,3 +10,8 @@
 - duansz/doo#V$!Uzvys
 - cm/12345678
 - dsz/vTX9oN9yPestzLL
+
+# 192.168.10.30
+- 地址：ssh nv@192.168.10.30
+- 密码：nvInitPswd
+- 部署目录：/home/nv/fudan-deploy/fudan-web-deploy

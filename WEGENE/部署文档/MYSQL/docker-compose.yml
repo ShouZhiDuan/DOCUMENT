@@ -1,0 +1,30 @@
+version: "3.7"
+
+networks:
+  nvx:
+    external:
+      name: nvx
+
+services:
+  mysql: 
+    #command: "--init-file /docker-entrypoint-initdb.d/init.sql"
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "Wentiliangkaihua@2021"
+      MYSQL_DATABASE: "daneng"
+    command: [
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci',
+      '--default-time-zone=+8:00'
+    ]
+    image: mysql
+    networks: 
+      - nvx
+    ports: 
+      - 33060:3306
+    restart: always
+    volumes: 
+      - "./data/db:/var/lib/mysql"
+      - "./conf/my.cnf:/etc/mysql/conf.d/my.cnf"
+      - "./log:/var/log/mysql"
+      - "./sql/init.sql:/docker-entrypoint-initdb.d/init.sql"

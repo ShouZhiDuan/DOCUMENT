@@ -1,0 +1,50 @@
+version: "3.7"
+
+services:
+
+  query-service:
+      env_file:
+         - prod.env
+      image: ${IMAGE_TAG}
+      container_name: query-api
+      ports:
+         - 1091:1091
+      networks:
+         - nvx
+      environment:
+         - TZ=Asia/Shanghai
+      volumes:
+         - ./logs:/var/daneng-logs/
+      restart: always
+
+
+  query-service2:
+      env_file:
+         - prod.env
+      image: ${IMAGE_TAG}
+      container_name: query-api2
+      ports:
+         - 1092:1091
+      networks:
+         - nvx
+      environment:
+         - TZ=Asia/Shanghai
+      volumes:
+         - ./logs2:/var/daneng-logs/
+      restart: always
+
+
+
+networks:
+  nvx:
+    external:
+      name: nvx
+
+
+
+
+
+
+
+
+

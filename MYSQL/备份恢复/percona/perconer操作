@@ -1,0 +1,183 @@
+docker run -it --rm --name percona-xtrabackup \
+  -v /root/dhf/mysql5.7/data:/var/lib/mysql \
+  -v ${PWD}:/backup \
+  f763180872/xtrabackup \
+  /bin/bash -c 'innobackupex \
+  -H 192.168.10.45 \
+  -P 22306 \
+  -u root \
+  -p 123456 \
+  --compress \
+  --stream=tar /tmp |gzip -> stg-mysql56-backups-20220928.tar.gz'
+
+
+
+docker run -it --rm --name percona-xtrabackup \
+  -v /root/dhf/mysql5.7/data:/var/lib/mysql \
+  -v ${PWD}:/backup \
+  f763180872/xtrabackup \
+  /bin/bash -c \
+  'innobackupex \
+  -H 192.168.10.19 \
+  -P 33306 \
+  -u root \
+  -p nvxdb123456 \
+  --compress \
+  --compress-threads=8 \
+  --stream=xbstream /tmp > /backup/stg-mysql57-backups-20220928.xb'
+  
+docker run -it --rm --name percona-xtrabackup \
+  -v /dhf/data:/var/lib/mysql \
+  -v ${PWD}:/backup \
+  f763180872/xtrabackup \
+  /bin/bash -c \
+  'innobackupex \
+  -H 192.168.10.19 \
+  -P 33306 \
+  -u root \
+  -p nvxdb123456 \
+  --compress \
+  --compress-threads=8 \
+  --stream=xbstream /tmp > /backup/192.168.10.19-$(date +%Y-%m-%d).xb'
+
+
+# 宿主机模式
+innobackupex  \
+--user=root \
+--password=nvxdb123456 \
+--port=33306 \
+--host=192.168.10.19 \
+--datadir=/dhf/data \
+--stream=xbstream  \
+--compress \
+--compress-threads=8 \
+/tmp > /backup/192.168.10.19-$(date +%Y-%m-%d)-5.xb
+
+innobackupex  \
+--user=xtrabackup \
+--password=123456 \
+--port=33306 \
+--host=192.168.10.19 \
+--datadir=/dhf/data \
+--databases=dhf \
+--parallel=32 \
+--compress \
+--compress-threads=8 \
+--compress-chunk-size=1073741824 \
+--stream=xbstream  \
+/tmp > /backup/192.168.10.19-$(date +%Y-%m-%d).xb
+
+innobackupex  \
+--user=xtrabackup \
+--password=123456 \
+--port=33306 \
+--host=192.168.10.19 \
+--datadir=/dhf/data \
+--stream=xbstream  \
+--tables-file=/data/name.txt \
+--compress \
+--compress-threads=8 \
+/tmp > /backup/192.168.10.19-$(date +%Y-%m-%d).xb
+
+
+
+# 分配备份账户
+create user 'xtrabackup'@'%' identified by '123456';
+GRANT reload,LOCK TABLES,process,replication client ON *.* TO 'xtrabackup'@'%';
+flush privileges;
+
+
+221229 12:42:54
+221229 12:43:30 completed OK!
+
+
+# 开始时间
+root@10 percona]# innobackupex  --user=xtrabackup --password=123456 --port=33306 --host=192.168.10.19 --datadir=/dhf/data --databases=dhf --parallel=32 --compress --compress-threads=8 --stream=xbstream  /tmp > /backup/192.168.10.19-$(date +%Y-%m-%d).xb
+
+--parallel=32
+221229 13:22:54 innobackupex: Starting the backup operation
+221229 13:36:44 completed OK!
+
+root@10 percona]# innobackupex  --user=xtrabackup --password=123456 --port=33306 --host=192.168.10.19 --datadir=/dhf/data --databases=dhf --parallel=64 --compress --compress-threads=8 --stream=xbstream  /tmp > /backup/192.168.10.19-$(date +%Y-%m-%d)-64.xb
+
+--parallel=64
+221229 13:46:30 innobackupex: Starting the backup operation
+221229 14:01:48  completed OK!
+
+
+# 跨机备份
+innobackupex  --user=xtrabackup --password=123456 --port=33306 --host=192.168.10.19 --datadir=/dhf/data --databases=dhf --parallel=128 --compress --compress-threads=8 --stream=xbstream  /tmp | ssh root@192.168.10.120 "xbstream -x -C /shouzhi/mysql-backup"
+221229 14:49:26 innobackupex: Starting the backup operation
+xtrabackup: Transaction log of lsn (316008675192) to (316008675201) was copied.
+221229 15:35:47 completed OK!
+
+
+
+
+# 压缩备份(xbstream、tar、tar.gz)
+https://blog.51cto.com/imysql/3229803
+
+
+# 免密登陆
+ssh-keygen
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@192.168.10.45
+
+
+# 恢复操作
+
+## 解压qp文件(前提：yum install qpress)
+innobackupex --decompress /shouzhi/mysql-backup
+
+## 应用日志
+innobackupex --use-memory=100G --apply-log  /shouzhi/mysql-backup
+
+
+## 启动数据库
+docker run -d -p 23306:3306 \
+-v /shouzhi/mysql-backup:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=123456 \
+--name shouzhi-mysql  \
+mysql:5.7.40
+
+docker run -d -p 23306:3306 \
+-v /shouzhi/mysql-data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=123456 \
+--name shouzhi-mysql  \
+mysql:5.7.40
+
+
+## 启动数据库
+docker run -d -p 23306:3306 \
+-v /shouzhi/mysql-backup:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=123456 \
+--name shouzhi-mysql  \
+mysql:5.7.40
+
+docker run  -p 23306:3306 \
+-v /shouzhi/mysql-data:/shouzhi/mysql-data \
+-v ./my.cnf:/etc/my.cnf \
+-e MYSQL_ROOT_PASSWORD=123456 \
+--name shouzhi-mysql  \
+mysql:5.7.40
+
+
+innobackupex --defaults-file=/shouzhi/my.cnf --user=root --copy-back /shouzhi/mysql-backup/
+
+
+
+
+# 远程xbstream方式
+innobackupex  --user=xtrabackup --password=123456 --port=33306 --host=192.168.10.19 --datadir=/dhf/data --databases=dhf --parallel=32 --compress --compress-threads=8 --stream=xbstream  /tmp | ssh root@192.168.10.120 "xbstream -x -C /shouzhi/mysql-backup"
+
+# 远程tar方式
+innobackupex  --user=xtrabackup --password=123456 --port=33306 --host=192.168.10.19 --datadir=/dhf/data --databases=dhf --parallel=32 --stream=tar  /tmp | ssh root@192.168.10.120 "cat - > /shouzhi/mysql-backup/backup.tar"
+
+innobackupex  --user=xtrabackup --password=123456 --port=33306 --host=192.168.10.19 --datadir=/dhf/data --databases=shouzhi --parallel=32 --stream=tar  /tmp | ssh root@192.168.10.120 "cat - > /shouzhi/tmp/shouzhi.tar"
+
+[root@10 dhf]# innobackupex  --user=xtrabackup --password=123456 --port=33306 --host=192.168.10.19 --datadir=/dhf/data --databases=dhf --parallel=32 --stream=tar  /tmp | ssh root@192.168.10.120 "cat - > /shouzhi/mysql-backup/backup.tar"
+221229 17:14:46 innobackupex: Starting the backup operation
+
+
+
+innobackupex --defaults-file=/shouzhi/redo-mysql/conf/my.cnf --use-memory=100G --apply-log /shouzhi/tmp
+innobackupex --defaults-file=/shouzhi/redo-mysql/conf/my.cnf --copy-back /shouzhi/tmp

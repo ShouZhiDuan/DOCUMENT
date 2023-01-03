@@ -73,7 +73,15 @@ innobackupex  \
 
 # 还原操作
 innobackupex --defaults-file=/shouzhi/redo-mysql/conf/my.cnf --use-memory=100G --apply-log /shouzhi/tmp
+innobackupex --use-memory=100G --apply-log /shouzhi/mysql-backup-xbstream/
 innobackupex --defaults-file=/shouzhi/redo-mysql/conf/my.cnf --copy-back /shouzhi/tmp
 
+# 安装qpress
+wget https://repo.percona.com/yum/release/7/RPMS/x86_64/qpress-11-1.el7.x86_64.rpm
+rpm -ivh qpress-11-1.el7.x86_64.rpm
 
-
+# 解压qp文件
+xtrabackup \
+--decompress \
+--parallel=8 \
+--target-dir=/shouzhi/mysql-backup-xbstream

@@ -85,3 +85,6 @@ xtrabackup \
 --decompress \
 --parallel=8 \
 --target-dir=/shouzhi/mysql-backup-xbstream
+
+# 增量备份教程
+https://segmentfault.com/a/1190000005668516

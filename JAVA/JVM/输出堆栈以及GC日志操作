@@ -1,0 +1,17 @@
+https://blog.csdn.net/qq_43653951/article/details/121901598
+
+-Xlog:gc*:logs/gc.log:time:filecount=10:filesize=10m
+:filecount=10                历史文件数量10个
+:filesize=10m                文件大小不超过10M
+
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=nvxdb_dump.hprof -Xlog:gc*:file=nvxdb_gc.log
+
+nohup java \
+# dump日志
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=nvxdb_dump.hprof \
+# gc日志
+-Xlog:gc*:file=nvxdb_gc.log \
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \
+-javaagent:/app/nvx-admin.jar \
+-XX:+DisableAttachMechanism \
+-jar /app/nvx-admin.jar > /app/logs/log_info.log 2>&1 &

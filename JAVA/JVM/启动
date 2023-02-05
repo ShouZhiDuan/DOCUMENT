@@ -1,4 +1,5 @@
 nohup java \
+-Xss256k \
 -Xms1536m -Xmx1536m \
 -XX:MetaspaceSize=200m -XX:MaxMetaspaceSize=200m \
 -XX:MetaspaceSize=200m -XX:MaxMetaspaceSize=200m \

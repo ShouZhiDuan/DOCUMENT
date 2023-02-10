@@ -2,7 +2,6 @@ nohup java \
 -Xss256k \
 -Xms1536m -Xmx1536m \
 -XX:MetaspaceSize=200m -XX:MaxMetaspaceSize=200m \
--XX:MetaspaceSize=200m -XX:MaxMetaspaceSize=200m \
 -Xlog:gc*:file=nvxdb_gc.log \
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=nvxdb_dump.hprof \
 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005 \

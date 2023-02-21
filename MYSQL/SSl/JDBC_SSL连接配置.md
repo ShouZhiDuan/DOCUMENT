@@ -38,3 +38,29 @@ password: 123456
 driverClassName: com.mysql.cj.jdbc.Driver
 url: jdbc:mysql://127.0.0.1:3306/test?sslMode=verify-ca&serverSslCert=${ssl.cert.path}/ca.pem&keyStore=${ssl.cert.path}/keystoremysql&keyStorePassword=123456
 ```
+
+# MySQl my.cnf 配置
+```text
+[client]
+port=3306
+
+[mysqld]
+#basedir=/mysql/basedir
+#datadir=/mysql/datadir
+max_connections=200
+max_connect_errors=10
+character-set-server=utf8
+
+log-bin=/var/lib/mysql/mysql-bin
+expire_logs_days=7
+server-id=1
+
+# 开启SSL
+require_secure_transport=ON
+ssl-ca=/var/lib/mysql/ca.pem
+ssl-cert=/var/lib/mysql/server-cert.pem
+ssl-key=/var/lib/mysql/server-key.pem
+
+[mysql]
+default-character-set=utf8
+```

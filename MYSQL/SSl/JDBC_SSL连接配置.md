@@ -1,4 +1,4 @@
-# MySQL Connector (2-way)
+# 一、MySQL Connector (2-way)
 
 ## 1、制作java证书库
 - ca.pem：MySQL安装data目录下ca.pem、ca-key.pem、client-cert.pem、client-key.pem、server-cert.pem、server-key.pem等
@@ -22,7 +22,7 @@ driverClassName: com.mysql.cj.jdbc.Driver
 url: jdbc:mysql://127.0.0.1:3306/test?useSSL=true&verifyServerCertificate=true&requireSSL=true&clientCertificateKeyStoreUrl=file:${ssl.cert.path}/keystoremysql&clientCertificateKeyStorePassword=123456&trustCertificateKeyStoreUrl=file:${ssl.cert.path}/truststoremysql&trustCertificateKeyStorePassword=123456&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
 ```
 
-# MariaDB Connector (2-way)
+# 二、MariaDB Connector (2-way)
 
 ## 参考文章
 - https://mariadb.com/kb/en/about-mariadb-connector-j/
@@ -39,7 +39,7 @@ driverClassName: com.mysql.cj.jdbc.Driver
 url: jdbc:mysql://127.0.0.1:3306/test?sslMode=verify-ca&serverSslCert=${ssl.cert.path}/ca.pem&keyStore=${ssl.cert.path}/keystoremysql&keyStorePassword=123456
 ```
 
-# MySQl my.cnf 配置
+# 三、MySQl my.cnf 配置
 ```text
 [client]
 port=3306

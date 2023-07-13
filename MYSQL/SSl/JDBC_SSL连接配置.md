@@ -1,4 +1,4 @@
-# MySQL MariaDB Connector (双向证书配置)
+# MySQL MariaDB SSL Connector (双向证书配置)
 
 ## 一、MySQL驱动配置（双向）
 ### 1、制作java证书库
